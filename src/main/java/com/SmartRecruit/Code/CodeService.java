@@ -15,5 +15,5 @@ public interface CodeService {
        //                    "code":"999999"}
     Map<String, String> validationCode(Map<String, String> parametres);
 
-
+//void changePassword(Map<String, String> parametres);
 }
