@@ -13,4 +13,6 @@ public interface UtilisateurService {
 
    List<UtilisateurDto> getAll();
 
+   Utilisateur loadUserByUsername(String username);
+
 }

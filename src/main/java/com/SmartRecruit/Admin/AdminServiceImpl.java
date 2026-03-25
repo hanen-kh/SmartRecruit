@@ -3,6 +3,7 @@ package com.SmartRecruit.Admin;
 import com.SmartRecruit.Utilisateur.Role;
 import com.SmartRecruit.Utilisateur.Utilisateur;
 import com.SmartRecruit.Utilisateur.UtilisateurDto;
+import com.SmartRecruit.Utilisateur.UtilisateurServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,21 +15,17 @@ public class AdminServiceImpl implements AdminService{
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UtilisateurServiceImpl utilisateurService;
 
     @Override
-    public AdminDto create (Admin admin){
-        if (adminRepository.findByEmail(admin.getEmail()).isPresent()){
-            throw new RuntimeException("un utilisateur deja existe avec cet email");
-        }
+    public AdminDto create(Admin admin) {
 
-        String hashedPassword= passwordEncoder.encode(admin.getMotdepasse());
-
-        admin.setMotdepasse(hashedPassword);
         admin.setRole(Role.ADMIN);
-        adminRepository.save(admin);
-        AdminDto adminDto = new AdminDto();
-        adminDto= this.AdminToDto(admin);
-        return  adminDto;
+
+        // 🔥 Réutilisation logique commune (email + password hash)
+        Admin savedAdmin = (Admin) utilisateurService.create(admin);
+
+        return this.AdminToDto(savedAdmin);
     }
 
 

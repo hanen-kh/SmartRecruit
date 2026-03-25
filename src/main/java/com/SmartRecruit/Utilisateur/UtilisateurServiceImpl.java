@@ -1,6 +1,8 @@
 package com.SmartRecruit.Utilisateur;
 
+import com.SmartRecruit.Code.CodeServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ public class UtilisateurServiceImpl implements UtilisateurService{
 
     private  final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     @Override
    public Utilisateur create (Utilisateur utilisateur) {
@@ -68,7 +71,12 @@ public class UtilisateurServiceImpl implements UtilisateurService{
     }
 
 
-
+    @Override
+    public Utilisateur loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.utilisateurRepository
+                .findByEmail(username)
+                .orElseThrow(() -> new  UsernameNotFoundException("No user matches this ID"));
+    }
 
 
 }
