@@ -2,9 +2,12 @@ package com.SmartRecruit.Utilisateur;
 
 
 import com.SmartRecruit.Code.CodeServiceImpl;
+import com.SmartRecruit.Jwt.Authentification;
+import com.SmartRecruit.Jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,7 @@ public class UtilisateurController {
 
 private final UtilisateurServiceImpl utilisateurService;
     private final CodeServiceImpl codeService;
+    private  final JwtService jwtService;
 
 @PostMapping
     public Utilisateur create (@RequestBody Utilisateur utilisateur){
@@ -52,5 +56,19 @@ private final UtilisateurServiceImpl utilisateurService;
     public ResponseEntity<Map<String, String>> validateCode(@RequestBody Map<String, String> request) {
         return ResponseEntity.ok(codeService.validationCode(request));
     }
+
+
+    @PostMapping("/login")
+    public Map<String, String> login(@RequestBody Authentification authentification) {
+
+
+            Utilisateur utilisateur = utilisateurService.loadUserByUsername(authentification.username());
+
+            return jwtService.generate(utilisateur.getUsername());
+
+
+    }
+
+
 
 }
